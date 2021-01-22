@@ -1,5 +1,9 @@
 <?php
 
+define('MVERSION', '1.0.0');
+
+echo "Yii migrator for create migration in exists project v." . MVERSION . "\r\n";
+
 $current_dir = dirname(__FILE__);
 
 $migration_folder = $current_dir . DIRECTORY_SEPARATOR . 'migrations';
