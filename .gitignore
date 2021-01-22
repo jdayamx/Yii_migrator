@@ -1,0 +1,8 @@
+# Ignore everything
+*
+
+# But not these files...
+!.gitignore
+!migrator
+!migrator.bat
+!migrator.php
