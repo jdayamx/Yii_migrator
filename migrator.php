@@ -23,6 +23,7 @@ if( !is_dir($migration_folder) ) {
     }
 }
 
+
 // todo: main code here
 
 $config_file = $config_folder . DIRECTORY_SEPARATOR . 'main.php';
@@ -45,21 +46,70 @@ try {
         if (isset($params['class']) && preg_match('~\.db\.~ui', $params['class'])) {
             $db_connection[$name] = $params;
         }
-    }
-
+    }   
     foreach($db_connection as $db_name => $db_params) {
+        $class_name = 'm'.date('ymd').'_000000_sheme_'.$db_name;
+        $text = '<?php'.PHP_EOL;
+        $text .= 'class '.$class_name.' extends CDbMigration'.PHP_EOL;
+        $text .= '{'.PHP_EOL;        
+        $text .="\t// Use safeUp/safeDown to do migration with transaction".PHP_EOL;
+	    $text .="\tpublic function safeUp()".PHP_EOL;
+	    $text .="\t{".PHP_EOL;
+        $text .="\t\t\$this->setDbConnection(Yii::app()->getComponent('".$db_name."'));".PHP_EOL;
+        $_d_table = '';
+        $_d_foreign_key = '';
         echo "\e[33mDB\e[0m: $db_name".PHP_EOL;        
         $tables = Yii::app()->$db_name->schema->getTables();
         echo "\e[32mTABLES\e[0m:".PHP_EOL;
         foreach($tables as $table) {
+            $_d_table .= "\t\t//\$this->dropTable('".$table->name."');".PHP_EOL;;
+            $_table = '';
             echo " - \e[36m$table->name\e[0m".PHP_EOL;
+
+            $_table .="\t\t\$this->createTable('".$table->name."', [".PHP_EOL;
+            $foreign_key = '';
             foreach($table->columns as $column=>$shema) {
-                echo "     | ".($table->primaryKey == $column?"\e[44m$column\e[0m":"$column").PHP_EOL;
+                $foreignKeys = array_keys($table->foreignKeys);
+                echo "     | ".($table->primaryKey == $column?"\e[44m$column\e[0m":in_array($column, $foreignKeys)?"\e[45m$column\e[0m":"$column").PHP_EOL;
+                $_table .="\t\t\t'".$column."' => '".strtoupper($shema->dbType).(!$shema->allowNull?" NOT NULL":"").($shema->autoIncrement?" AUTO_INCREMENT":"").($shema->isPrimaryKey?" PRIMARY KEY":"").($shema->comment?" COMMENT \"".addslashes($shema->comment)."\"":"")."',".PHP_EOL;
+                if($shema->isForeignKey) {
+                    $foreign_key .= "\t\t\$this->createIndex('".$column."', '".$table->name."', '".$column."');".PHP_EOL;
+                    $_d_foreign_key .= "\t\t//\$this->dropIndex('".$column."', '".$table->name."');".PHP_EOL;
+                }
+            }     
+            $_table .= "\t\t]);".PHP_EOL;      
+            $_table .= $foreign_key;
+
+            
+            $text .= $_table.PHP_EOL;
+            
+        }
+        $text .= "\t}".PHP_EOL.PHP_EOL;            
+        $text .= "\tpublic function safeDown()".PHP_EOL;        
+        $text .= "\t{".PHP_EOL;
+        $text .= "\t\t//Uncomment if you want lose your data".PHP_EOL;
+        $text .= "\t\t//\$this->setDbConnection(Yii::app()->getComponent('".$db_name."'));".PHP_EOL;
+        $text .= $_d_foreign_key;
+        $text .= $_d_table;
+        $text .= "\t}".PHP_EOL.PHP_EOL;
+        
+        $text .= '}'.PHP_EOL;
+        //echo  $text;
+        $migration_file = $migration_folder.DIRECTORY_SEPARATOR.$class_name.'.php';
+        $create = false;
+        if(file_exists($migration_file)) {
+            if(preg_match('~y~ui', readline('Owerwrite file '.$class_name.'.php ? Y/N '))) {
+                $create = true;
             }
+        } else {
+            $create = true;
+        }
+
+        if($create) {
+            file_put_contents($migration_file, $text);
         }
         
     }
-
 } catch (Throwable $t) {
     die("\e[31mFATAL ERROR\e[0m: " . $t->getMessage() . "\r\n");
 } catch (Exception $e) {
