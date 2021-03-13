@@ -9,4 +9,11 @@ Yii_migrator
 
 ### Instruction
 Copy the files to the project folder and, depending on your OS, run migrator or migrator.bat
+
 After starting, a directory with migrations and migration files with existing databases and all tables in them will be created. 
+
+**Social Media:**
+
+Twitter: <http://www.twitter.com/jdayamx>
+
+Facebook: <http://www.facebook.com/jdayamx>
