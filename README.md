@@ -2,10 +2,12 @@
 Creating automatic migrations in existing projects
 
 ### What's included
+```
 Yii_migrator
   ├── migrator
   ├── migrator.bat
   └── migrator.php
+```
 
 ### Instruction
 Copy the files to the project folder and, depending on your OS, run migrator or migrator.bat
