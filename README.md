@@ -1,5 +1,6 @@
 # Yii_migrator
-Creating automatic migrations in existing projects
+Creating automatic migrations in existing projects.
+The script reads all components from the main config with ".db" specified in the class and then opens the database schema, reads all tables and creates migrations for these tables. indexes are also created, if any. 
 
 ### What's included
 ```
