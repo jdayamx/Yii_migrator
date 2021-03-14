@@ -9,7 +9,8 @@ Yii_migrator
   └── migrator.php
 ```
 ### Screenshots
-![screen1](screens/screen1.png)
+![screen1](screens/screen1.png) ![screen2](screens/screen2.png)
+![screen3](screens/screen3.png) ![screen4](screens/screen4.png)
 
 ### Instruction
 Copy the files to the project folder "*protected*" and, depending on your OS, run migrator or migrator.bat
