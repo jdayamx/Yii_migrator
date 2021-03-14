@@ -17,6 +17,12 @@ Copy the files to the project folder "*protected*" and, depending on your OS, ru
 
 After starting, a directory with migrations and migration files with existing databases and all tables in them will be created. 
 
+Attention ! If the script caused you an error, try to edit the file and specify the correct path to the FRAMEWORK folder 
+```
+# change here if your framework in other path
+$yii = $current_dir . '/../../framework/yii.php';
+```
+
 **Social Media:**
 
 Twitter: <http://www.twitter.com/jdayamx>
